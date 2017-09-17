@@ -32,7 +32,11 @@ SceneDelegate::SceneDelegate(pxr::HdRenderIndex *parentIndex, pxr::SdfPath const
 	GetRenderIndex().InsertBprim(pxr::HdPrimTypeTokens->texture, this, pxr::SdfPath("/texture") );
 
 	textureHandle = pxr::GlfTextureRegistry::GetInstance().GetTextureHandle(pxr::TfToken("default.png"));
+	textureHandle->AddMemoryRequest(1024 * 1024);
 	std::cout << textureHandle << std::endl;
+
+	pxr::HdSimpleTextureResource *p = new pxr::HdSimpleTextureResource(textureHandle, false /* not ptex */ );
+	textureResource = pxr::HdTextureResourceSharedPtr(p);
 }
 
 void
@@ -98,7 +102,17 @@ pxr::VtValue SceneDelegate::Get(pxr::SdfPath const &id, const pxr::TfToken &key)
 		points.push_back(pxr::GfVec3f(-1,1,0));
 		return pxr::VtValue(points);
 	}
+	if (key == pxr::TfToken("uv"))
+	{
+		pxr::VtVec2fArray uvs;
 
+		uvs.push_back(pxr::GfVec2f(0,0));
+		uvs.push_back(pxr::GfVec2f(1,0));
+		uvs.push_back(pxr::GfVec2f(1,1));
+		uvs.push_back(pxr::GfVec2f(0,1));
+
+		return pxr::VtValue(uvs);
+	}
 	if (key == pxr::HdTokens->color)
 	{
 		return pxr::VtValue(pxr::GfVec4f(0.5f, 0.5f, 0.5f, 1.0));
@@ -147,6 +161,7 @@ pxr::TfTokenVector SceneDelegate::GetPrimVarVertexNames(pxr::SdfPath const &id)
 
 	pxr::TfTokenVector names;
 	names.push_back(pxr::HdTokens->points);
+	names.push_back(pxr::TfToken("uv"));
 
 	return names;
 }
@@ -162,7 +177,11 @@ std::string SceneDelegate::GetSurfaceShaderSource(pxr::SdfPath const &shaderId)
 {
 	std::cout << "[" << shaderId.GetString() <<"][GetSurfaceShaderSource]" << std::endl;
 
-	return "vec4 surfaceShader(vec4 Peye, vec3 Neye, vec4 color, vec4 patchCoord) { return vec4(0.2, 0.5, 0.2, 1) * color; }";
+	// render the UVs
+	//return "vec4 surfaceShader(vec4 Peye, vec3 Neye, vec4 color, vec4 patchCoord) { return vec4(HdGet_uv().x, HdGet_uv().y, 0, 1) * color; }";
+
+	// sample from the textures using the UVs
+	return "vec4 surfaceShader(vec4 Peye, vec3 Neye, vec4 color, vec4 patchCoord) { return HdGet_textureColor(HdGet_uv()) * color; }";
 }
 
 std::string SceneDelegate::GetDisplacementShaderSource(pxr::SdfPath const &shaderId)
@@ -174,13 +193,17 @@ std::string SceneDelegate::GetDisplacementShaderSource(pxr::SdfPath const &shade
 pxr::VtValue SceneDelegate::GetSurfaceShaderParamValue(pxr::SdfPath const &shaderId, const pxr::TfToken &paramName)
 {
 	std::cout << "[" << shaderId.GetString() << "." << paramName <<"][GetSurfaceShaderParamValue]" << std::endl;
+
 	return  pxr::VtValue();
 }
 
 pxr::HdShaderParamVector SceneDelegate::GetSurfaceShaderParams(pxr::SdfPath const &shaderId)
 {
 	std::cout << "[" << shaderId.GetString() <<"][GetSurfaceShaderParams]" << std::endl;
+
 	pxr::HdShaderParamVector r;
+	pxr::HdShaderParam param(pxr::TfToken("textureColor"),  pxr::VtValue(pxr::GfVec4f(0.5f, 0.5f, 0.5f, 1.0)), pxr::SdfPath("/texture") );
+	r.push_back(param);
 	return r;
 }
 
@@ -194,11 +217,11 @@ pxr::SdfPathVector SceneDelegate::GetSurfaceShaderTextures(pxr::SdfPath const &s
 pxr::HdTextureResource::ID SceneDelegate::GetTextureResourceID(pxr::SdfPath const &textureId)
 {
 	std::cout << "[" << textureId.GetString() <<"][GetTextureResourceID]" << std::endl;
-	return 0;
+	return 123425;
 }
 
 pxr::HdTextureResourceSharedPtr SceneDelegate::GetTextureResource(pxr::SdfPath const &textureId)
 {
 	std::cout << "[" << textureId.GetString() <<"][GetTextureResource]" << std::endl;
-	return pxr::HdTextureResourceSharedPtr();
+	return textureResource;
 }

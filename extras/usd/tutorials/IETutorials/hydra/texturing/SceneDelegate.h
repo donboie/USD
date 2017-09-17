@@ -47,4 +47,7 @@ private:
 
 	std::string shaderSource;
 	pxr::GlfTextureHandleRefPtr textureHandle;
+
+	pxr::HdTextureResourceSharedPtr textureResource;
+
 };
