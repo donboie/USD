@@ -1,0 +1,73 @@
+
+<meta charset="utf-8" lang="en">
+
+USD & Hydra Notes
+=================
+
+Example USD & Hydra examples to investigate the API & functionality of USD & Hydra.
+
+Project Structure
+-----------------
+
+* hydra [*hydra renderer examples*](hydra)
+    * helloWorld [*Simple single triangle rendered using Hydra*](hydra/helloWorld)
+    * simpleObject *simple .obj - lambert lit solid color object*
+        * [tinyObj](https://github.com/syoyo/tinyobjloader)
+        * [teapot](http://g3d.cs.williams.edu/g3d/data10/common/model/teapot/teapot.zip) 
+    * shader [*triangle with a solid color shader assigned*](hydra/shader)
+        * lighting has to be enabled for the shader to be acivated
+    * texturing [*quad with a texture*](hydra/texturing)
+        * Trying to use **pxr::GlfTextureRegistry::GetInstance().GetTextureHandle(pxr::TfToken("default.png"));**
+        * looks like the plugin required for texture loading isn't loaded
+        * What is the difference between **GetTextureResourceID** & **GetTextureResource**
+        * How are textures bound to shaders?
+    * deformation
+    * displacement
+    * dyanmic scene
+    * index render / picking
+    * instancing
+    * lighting
+    * material
+    * textured
+    * curves
+    * points
+    * primvars
+    * render target
+    * shadows
+    * subd
+    * embree
+    * rederer plugin
+    * post processing & effects
+    * deferred rendering
+    * motion blur
+    * streaming
+* usd
+    * sceneReader
+    * sceneWriter
+
+Open Questions
+--------------
+
+Hydra Engine include requires ptyhon?
+
+~~~
+#include "pxr/imaging/hd/engine.h"
+~~~~
+
+* Used **garch/glDebugWindow** to create a window with OpenGL context.
+    * How can I setup GLEW extensions?
+
+* Debug build using build_usd.py
+* Ask about clion setup. Has anyone figured out how to get this working?
+
+
+
+Questions:
+
+Why doesn't `template<T> HdRenderIndex::InsertTask` return the newly created Task as `boost::shared_ptr<T>`?
+
+What are working definitions of the imaging libraries: Hd, Hdx & HdSt?
+
+
+
+<!-- Markdeep: --><style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style><script src="markdeep.min.js"></script><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
