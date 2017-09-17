@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "pxr/imaging/hdSt/camera.h"
+#include "pxr/imaging/hd/shader.h"
 #include "pxr/imaging/cameraUtil/conformWindow.h"
 #include "pxr/imaging/pxOsd/tokens.h"
 
@@ -14,7 +15,9 @@
 
 
 SceneDelegate::SceneDelegate(pxr::HdRenderIndex *parentIndex, pxr::SdfPath const &delegateID)
- : pxr::HdSceneDelegate(parentIndex, delegateID)
+ : pxr::HdSceneDelegate(parentIndex, delegateID),
+   color(pxr::GfVec4f(0.0f, 0.0f, 0.0f, 1.0)),
+	time(0.0f)
 {
 	cameraPath = pxr::SdfPath("/camera");
 	GetRenderIndex().InsertSprim(pxr::HdPrimTypeTokens->camera, this, cameraPath);
@@ -152,7 +155,7 @@ std::string SceneDelegate::GetSurfaceShaderSource(pxr::SdfPath const &shaderId)
 {
 	std::cout << "[" << shaderId.GetString() <<"][GetSurfaceShaderSource]" << std::endl;
 
-	return "vec4 surfaceShader(vec4 Peye, vec3 Neye, vec4 color, vec4 patchCoord) { return vec4(0.2, 0.5, 0.2, 1) * color; }";
+	return "vec4 surfaceShader(vec4 Peye, vec3 Neye, vec4 color, vec4 patchCoord) { return HdGet_myColor() * color; }";
 }
 
 std::string SceneDelegate::GetDisplacementShaderSource(pxr::SdfPath const &shaderId)
@@ -164,6 +167,11 @@ std::string SceneDelegate::GetDisplacementShaderSource(pxr::SdfPath const &shade
 pxr::VtValue SceneDelegate::GetSurfaceShaderParamValue(pxr::SdfPath const &shaderId, const pxr::TfToken &paramName)
 {
 	std::cout << "[" << shaderId.GetString() << "." << paramName <<"][GetSurfaceShaderParamValue]" << std::endl;
+
+	if (paramName == pxr::TfToken("myColor"))
+	{
+		return pxr::VtValue(color);
+	}
 	return  pxr::VtValue();
 }
 
@@ -171,6 +179,8 @@ pxr::HdShaderParamVector SceneDelegate::GetSurfaceShaderParams(pxr::SdfPath cons
 {
 	std::cout << "[" << shaderId.GetString() <<"][GetSurfaceShaderParams]" << std::endl;
 	pxr::HdShaderParamVector r;
+	pxr::HdShaderParam param(pxr::TfToken("myColor"),  pxr::VtValue(color) );
+	r.push_back(param);
 	return r;
 }
 
@@ -178,4 +188,11 @@ pxr::SdfPathVector SceneDelegate::GetSurfaceShaderTextures(pxr::SdfPath const &s
 {
 	std::cout << "[" << shaderId.GetString() <<"][GetSurfaceShaderTextures]" << std::endl;
 	return pxr::SdfPathVector();
+}
+
+void SceneDelegate::UpdateColor()
+{
+	time +=  0.001f;
+	color = pxr::GfVec4f(sinf(time), sinf(time * 1.2 + 1.5), 0.0f, 1.0);
+	GetRenderIndex().GetChangeTracker().MarkSprimDirty(pxr::SdfPath("/shader"),  pxr::HdShader::AllDirty);
 }

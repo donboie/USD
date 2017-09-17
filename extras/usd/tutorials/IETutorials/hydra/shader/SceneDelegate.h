@@ -32,6 +32,7 @@ public:
 	pxr::HdShaderParamVector GetSurfaceShaderParams(pxr::SdfPath const &shaderId) override;
 	pxr::SdfPathVector GetSurfaceShaderTextures(pxr::SdfPath const &shaderId) override;
 
+	void UpdateColor();
 private:
 	// per location (SdfPath) cache of dictionaries (TfToken -> VtValue) 
 	typedef pxr::TfHashMap<pxr::TfToken, pxr::VtValue, pxr::TfToken::HashFunctor> _ValueCache;
@@ -42,4 +43,7 @@ private:
 	pxr::SdfPath cameraPath;
 
 	std::string shaderSource;
+
+	pxr::GfVec4f color;
+	float time;
 };

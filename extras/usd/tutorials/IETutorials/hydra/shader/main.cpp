@@ -58,6 +58,8 @@ public:
 	{
 		pxr::GarchGLDebugWindow::OnPaintGL();
 
+		sceneDelegate->UpdateColor();
+
 		// clear to blue
 		glClearColor(0.1f, 0.1f, 0.3f, 1.0 );
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
