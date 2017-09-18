@@ -84,9 +84,11 @@ if (${CMAKE_HOST_UNIX})
         NAMES
             GLEW glew
         HINTS
+            "${GLEW_LOCATION}"
             "${GLEW_LOCATION}/lib"
             "$ENV{GLEW_LOCATION}/lib"
         PATHS
+            "${GLEW_LOCATION}"
             "${GLEW_LOCATION}/lib"
             /usr/lib64
             /usr/lib
