@@ -82,7 +82,7 @@ int main(int argc, char** argv)
 	}
 
 	// create a window, GLContext & extensions
-	DebugWindow window("hydra test", 1280, 720);
+	DebugWindow window("hydra - Hello World", 1280, 720);
 	window.Init();
 	bool glewInit = pxr::GlfGlewInit();
 	std::cout << "glew:" << glewInit << std::endl;
