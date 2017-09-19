@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include "pxr/imaging/glf/textureRegistry.h"
+#include "pxr/imaging/hd/resourceRegistry.h"
 
 #include "pxr/imaging/hdSt/camera.h"
 #include "pxr/imaging/cameraUtil/conformWindow.h"
@@ -21,7 +22,7 @@ SceneDelegate::SceneDelegate(pxr::HdRenderIndex *parentIndex, pxr::SdfPath const
 	cameraPath = pxr::SdfPath("/camera");
 	GetRenderIndex().InsertSprim(pxr::HdPrimTypeTokens->camera, this, cameraPath);
 	pxr::GfFrustum frustum;
-	frustum.SetPosition(pxr::GfVec3d(0, 0, 3));
+	frustum.SetPosition(pxr::GfVec3d(0, 0, 2));
 	SetCamera(frustum.ComputeViewMatrix(), frustum.ComputeProjectionMatrix());
 
 	// single quad
@@ -31,12 +32,7 @@ SceneDelegate::SceneDelegate(pxr::HdRenderIndex *parentIndex, pxr::SdfPath const
 
 	GetRenderIndex().InsertBprim(pxr::HdPrimTypeTokens->texture, this, pxr::SdfPath("/texture") );
 
-	textureHandle = pxr::GlfTextureRegistry::GetInstance().GetTextureHandle(pxr::TfToken("default.png"));
-	textureHandle->AddMemoryRequest(1024 * 1024);
-	std::cout << textureHandle << std::endl;
 
-	pxr::HdSimpleTextureResource *p = new pxr::HdSimpleTextureResource(textureHandle, false /* not ptex */ );
-	textureResource = pxr::HdTextureResourceSharedPtr(p);
 }
 
 void
@@ -115,7 +111,7 @@ pxr::VtValue SceneDelegate::Get(pxr::SdfPath const &id, const pxr::TfToken &key)
 	}
 	if (key == pxr::HdTokens->color)
 	{
-		return pxr::VtValue(pxr::GfVec4f(0.5f, 0.5f, 0.5f, 1.0));
+		return pxr::VtValue(pxr::GfVec4f(0.9f, 0.9f, 0.9f, 1.0));
 	}
 
 	return pxr::VtValue();
@@ -202,7 +198,7 @@ pxr::HdShaderParamVector SceneDelegate::GetSurfaceShaderParams(pxr::SdfPath cons
 	std::cout << "[" << shaderId.GetString() <<"][GetSurfaceShaderParams]" << std::endl;
 
 	pxr::HdShaderParamVector r;
-	pxr::HdShaderParam param(pxr::TfToken("textureColor"),  pxr::VtValue(pxr::GfVec4f(0.5f, 0.5f, 0.5f, 1.0)), pxr::SdfPath("/texture") );
+	pxr::HdShaderParam param(pxr::TfToken("textureColor"),  pxr::VtValue(pxr::GfVec4f(0.9f, 0.9f, 0.9f, 1.0)), pxr::SdfPath("/texture") );
 	r.push_back(param);
 	return r;
 }
@@ -223,5 +219,15 @@ pxr::HdTextureResource::ID SceneDelegate::GetTextureResourceID(pxr::SdfPath cons
 pxr::HdTextureResourceSharedPtr SceneDelegate::GetTextureResource(pxr::SdfPath const &textureId)
 {
 	std::cout << "[" << textureId.GetString() <<"][GetTextureResource]" << std::endl;
+	if (!textureHandle)
+	{
+		textureHandle = pxr::GlfTextureRegistry::GetInstance().GetTextureHandle(pxr::TfToken("default.jpg"));
+		textureHandle->AddMemoryRequest(1024 * 1024);
+		std::cout << textureHandle << std::endl;
+
+		pxr::HdSimpleTextureResource *p = new pxr::HdSimpleTextureResource(textureHandle, false /* not ptex */ );
+		textureResource = pxr::HdTextureResourceSharedPtr(p);
+	}
+
 	return textureResource;
 }
