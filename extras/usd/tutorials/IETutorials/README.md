@@ -22,13 +22,51 @@ A bunch of examples to learn USD & Hydra C++ APIs
         * [tinyObj](https://github.com/syoyo/tinyobjloader)
         * [teapot](http://g3d.cs.williams.edu/g3d/data10/common/model/teapot/teapot.zip) 
     * shader [*triangle with a solid color shader assigned*](hydra/shader)
-        * lighting has to be enabled for the shader to be acivated
+        * lighting has to be enabled for the shader to be activated
+        * animated shader constant 
     * texturing [*quad with a texture*](hydra/texturing)
-        * Trying to use **pxr::GlfTextureRegistry::GetInstance().GetTextureHandle(pxr::TfToken("default.png"));**
-        * looks like the plugin required for texture loading isn't loaded
-        * What is the difference between **GetTextureResourceID** & **GetTextureResource**
-        * How are textures bound to shaders?
-        
+        * creating a primvar results in GLSL functions for reading and they're automatically synced
+        * demonstrate creation & rendering of UVs
+    * lighting [simple light moving around a static object](hydra/lighting)
+        * create a procedural cube
+        * point, spot, area, directional?
+    * shadowing [spot light shadow](hydra/shadowing)
+        * point, spot, area, directional?
+    * subd
+        *
+    * displacement
+        *
+    * instancing
+        *
+    * deformation
+        *
+    * points
+        *
+    * curves
+        *
+    * picking
+        *
+    * shading
+        *    
+    * render targets
+        * 
+    * embree
+        *
+
+     
+### Hello World
+### Simple Object     
+### Shader
+### Lighting
+### Shadowing
+### SubD
+### Displacement
+### Instancing
+### Deformation
+### Points
+### Curves
+### Picking
+### Embree
         
 ## Questions & Todo
 
