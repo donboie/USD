@@ -39,7 +39,7 @@ SceneDelegate::SceneDelegate(pxr::HdRenderIndex *parentIndex, pxr::SdfPath const
 	light1.SetSpotCutoff(90.0);
 	light1.SetPosition(pxr::GfVec4f(0, 2, 0, 0));
 	light1.SetSpotDirection(pxr::GfVec3f(0,-1,0));
-	light1.SetSpecular(pxr::GfVec4f(0,0,0,0));
+	light1.SetSpecular(pxr::GfVec4f(1,1,1,1));
 	light1.SetAmbient(pxr::GfVec4f(0.0,0.0,0.0,1));
 	light1.SetHasShadow(false);
 	light1.SetIsCameraSpaceLight(false);
