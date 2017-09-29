@@ -2,11 +2,10 @@ add_executable (helloWorld
         main.cpp
         SceneDelegate.cpp SceneDelegate.h)
 
-find_package(PythonLibs)
-find_package(OpenGL)
-
 target_include_directories(helloWorld
         PUBLIC
+            ${Boost_INCLUDE_DIR}
+            ${TBB_ROOT}/include
             ${USD_INC_DIR}
             ${PYTHON_INCLUDE_PATH}
         )
@@ -27,8 +26,8 @@ target_link_libraries(
                 ${USD_LIB_DIR}/libglf.so
                 ${USD_LIB_DIR}/libvt.so
                 ${USD_LIB_DIR}/libpxOsd.so
-                ${USD_LIB_DIR}/libosdCPU.so
-                ${USD_LIB_DIR}/libboost_python.so # todo find library
+                ${OPENSUBDIV_ROOT_DIR}/lib/libosdCPU.so
+                ${Boost_LIBRARIES}
                 ${PYTHON_LIBRARY}
                 ${OPENGL_LIBRARIES}
         )
